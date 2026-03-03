@@ -1,0 +1,20 @@
+name: github-digest
+description: Daily GitHub notification digest
+version: "1.0"
+trigger:
+  type: cron
+  schedule: "0 18 * * 1-5"
+  endpoint: ""
+steps:
+  - name: fetch_notifications
+    tool: github
+    action: api notifications
+    prompt: ""
+    inputs: {}
+    output: notifications
+  - name: digest
+    tool: claude
+    action: ""
+    prompt: "Create a concise digest of these GitHub notifications: {notifications}"
+    inputs: {}
+    output: summary

@@ -1,0 +1,28 @@
+name: morning-standup
+description: Summarize open GitHub PRs and post to Slack
+version: "1.0"
+trigger:
+  type: cron
+  schedule: "0 9 * * 1-5"
+  endpoint: ""
+steps:
+  - name: fetch_prs
+    tool: github
+    action: pr list --state open
+    prompt: ""
+    inputs: {}
+    output: prs
+  - name: summarize
+    tool: claude
+    action: ""
+    prompt: "Summarize these open PRs for a team standup (be brief): {prs}"
+    inputs: {}
+    output: summary
+  - name: post_slack
+    tool: slack
+    action: post_message
+    prompt: ""
+    inputs:
+      channel: "#standup"
+      message: "{summary}"
+    output: ""

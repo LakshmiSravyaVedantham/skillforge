@@ -1,0 +1,22 @@
+name: pr-review-reminder
+description: Ping stale PRs awaiting review
+version: "1.0"
+trigger:
+  type: cron
+  schedule: "0 14 * * 1-5"
+  endpoint: ""
+steps:
+  - name: list_stale
+    tool: github
+    action: pr list --state open --search "review:required"
+    prompt: ""
+    inputs: {}
+    output: stale_prs
+  - name: remind
+    tool: slack
+    action: post_message
+    prompt: ""
+    inputs:
+      channel: "#engineering"
+      message: "PRs awaiting review: {stale_prs}"
+    output: ""

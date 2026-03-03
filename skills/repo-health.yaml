@@ -1,0 +1,20 @@
+name: repo-health
+description: Weekly repository health metrics report
+version: "1.0"
+trigger:
+  type: cron
+  schedule: "0 9 * * 1"
+  endpoint: ""
+steps:
+  - name: get_stats
+    tool: github
+    action: repo view --json issues,pullRequests,stargazerCount
+    prompt: ""
+    inputs: {}
+    output: stats
+  - name: report
+    tool: claude
+    action: ""
+    prompt: "Create a weekly health report from these repo stats: {stats}"
+    inputs: {}
+    output: report

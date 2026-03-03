@@ -1,0 +1,28 @@
+name: hn-monitor
+description: Monitor Hacker News for keywords and send digest
+version: "1.0"
+trigger:
+  type: cron
+  schedule: "0 8 * * *"
+  endpoint: ""
+steps:
+  - name: fetch_hn
+    tool: http
+    action: https://hn.algolia.com/api/v1/search?query=YOUR_KEYWORD&tags=story
+    prompt: ""
+    inputs: {}
+    output: results
+  - name: summarize
+    tool: claude
+    action: ""
+    prompt: "Summarize these HN results, highlight the most interesting: {results}"
+    inputs: {}
+    output: digest
+  - name: post
+    tool: slack
+    action: post_message
+    prompt: ""
+    inputs:
+      channel: "#hn-digest"
+      message: "{digest}"
+    output: ""
