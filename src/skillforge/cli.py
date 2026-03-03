@@ -100,13 +100,17 @@ def deploy(name: str, dry_run: bool, output_dir: Path) -> None:
         raise click.ClickException(f"Skill '{name}' not found.")
 
     schedule = manifest.trigger.schedule or "0 9 * * 1-5"
+    if manifest.trigger.type == "cron":
+        cron_block = f'  schedule:\n    - cron: "{schedule}"'
+    else:
+        cron_block = ""
     workflow = f"""\
 name: {manifest.name}
 # {manifest.description}
 
 on:
   workflow_dispatch:
-{f'  schedule:\\n    - cron: "{schedule}"' if manifest.trigger.type == "cron" else ""}
+{cron_block}
 
 jobs:
   run:
